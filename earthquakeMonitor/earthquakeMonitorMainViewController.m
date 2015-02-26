@@ -216,8 +216,14 @@
 
 -(void)operationFailedWithError:(NSError *)error{
     NSLog(@"%@",error);
+    [earthquakes removeAllObjects];
+    [earthquakes addObjectsFromArray:[dataSource getLastEarthquakes]];
+    titleLabel.text = [dataSource getTitle];
     if (segmentedControl.selectedSegmentIndex == 0) {
-        [self reloadTable];
+        dispatch_after(2, dispatch_get_main_queue(), ^{
+            [self reloadTable];
+        }
+                       );
     } else {
         [self setupAnnotation];
     }
