@@ -49,7 +49,7 @@
 
 -(void)setupView {
     self.view.frame = [[UIScreen mainScreen] bounds];
-    topView.frame = CGRectMake(0, 0, self.view.frame.size.width, topView.frame.size.height);
+    topView.frame = CGRectMake(0, 0, self.view.frame.size.width, 212.0);
     titleLabel.center = CGPointMake(topView.frame.size.width/2, titleLabel.center.y);
     earthquakeMapView.frame = CGRectMake(0, topView.frame.size.height, self.view.frame.size.width, self.view.frame.size.height-topView.frame.size.height);
 }

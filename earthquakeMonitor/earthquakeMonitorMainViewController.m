@@ -73,7 +73,7 @@
 
 -(void)setupView {
     self.view.frame = [[UIScreen mainScreen] bounds];
-    topView.frame = CGRectMake(0, 0, self.view.frame.size.width, topView.frame.size.height);
+    topView.frame = CGRectMake(0, 0, self.view.frame.size.width, 129.0);
     titleLabel.center = CGPointMake(topView.frame.size.width/2, titleLabel.center.y);
     refreshButton.frame = CGRectMake(topView.frame.size.width-refreshButton.frame.size.width, titleLabel.frame.origin.y+titleLabel.frame.size.height, refreshButton.frame.size.width, refreshButton.frame.size.height);
     segmentedControl.frame = CGRectMake(0, topView.frame.size.height-segmentedControl.frame.size.height-2, topView.frame.size.width, segmentedControl.frame.size.height);
@@ -103,6 +103,9 @@
 }
 
 -(void)reloadTable{
+    [earthquakes removeAllObjects];
+    [earthquakes addObjectsFromArray:[dataSource getLastEarthquakes]];
+    titleLabel.text = [dataSource getTitle];
     [refreshControl endRefreshing];
     [earthquakeTableView reloadData];
 }
@@ -201,26 +204,20 @@
 
 -(void)operationFinished {
     NSLog(@"operationFinished");
-    [earthquakes removeAllObjects];
-    [earthquakes addObjectsFromArray:[dataSource getLastEarthquakes]];
-    titleLabel.text = [dataSource getTitle];
-    if (segmentedControl.selectedSegmentIndex == 0) {
-        dispatch_after(2, dispatch_get_main_queue(), ^{
-            [self reloadTable];
-        }
-                       );
-    } else {
-        [self setupAnnotation];
-    }
+    [self reloadViewsAnyway];
 }
 
 -(void)operationFailedWithError:(NSError *)error{
     NSLog(@"%@",error);
-    [earthquakes removeAllObjects];
-    [earthquakes addObjectsFromArray:[dataSource getLastEarthquakes]];
-    titleLabel.text = [dataSource getTitle];
+    [self reloadViewsAnyway];
+}
+
+-(void)reloadViewsAnyway {
     if (segmentedControl.selectedSegmentIndex == 0) {
-        dispatch_after(2, dispatch_get_main_queue(), ^{
+        
+        double delayInSeconds = 2.0;
+        dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+        dispatch_after(delayTime, dispatch_get_main_queue(), ^{
             [self reloadTable];
         }
                        );
